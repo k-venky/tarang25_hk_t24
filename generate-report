@@ -1,0 +1,26 @@
+<section id="report">
+    <h2>Report</h2>
+    <button id="generate-report">Generate Report</button>
+    <div id="report-container"></div>
+</section>
+
+<script>
+    document.querySelector('#generate-report').addEventListener('click', function() {
+        fetch('http://localhost:5000/generate-report')
+            .then(response => response.json())
+            .then(data => {
+                const counselingData = data.counselingData.map(entry => `<p>${entry.timestamp}: ${entry.feelings}</p>`).join('');
+                const trackingData = data.trackingData.map(entry => `<p>${entry.timestamp}: Mood - ${entry.mood}, Stress Level - ${entry.stressLevel}</p>`).join('');
+
+                document.querySelector('#report-container').innerHTML = `
+                    <h3>Counseling Sessions:</h3>
+                    ${counselingData}
+                    <h3>Mood and Stress Tracking:</h3>
+                    ${trackingData}
+                `;
+            })
+            .catch(error => {
+                alert('Error generating the report. Please try again later.');
+            });
+    });
+</script>

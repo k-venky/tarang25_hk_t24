@@ -1,61 +1,322 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mental Health Support for Students</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Mental Health App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>Mental Health Support for Students</h1>
-      <nav>
-        <ul>
-          <li><a href="#counseling">Anonymous Counseling</a></li>
-          <li><a href="#stress-relief">Stress Relief Exercises</a></li>
-          <li><a href="#tracking">Mental Health Tracking</a></li>
-          <li><a href="#resources">Resources</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
 
-  <main>
+    <!-- Header Section -->
+    <header>
+        <h1>Student Mental Health Support</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#counseling">Anonymous Counseling</a></li>
+                <li><a href="#stress-relief">Stress Relief Exercises</a></li>
+                <li><a href="#tracking">Mental Health Tracking</a></li>
+                <li><a href="#resources">Resources</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Homepage Section -->
+    <section id="home">
+        <h2>Welcome to Student Mental Health Support</h2>
+        <p>We are here to help you manage stress, track your mental health, and provide resources to help you navigate academic and personal challenges.</p>
+    </section>
+
     <!-- Anonymous Counseling Section -->
-    <section id="counseling" class="section">
-      <h2>Anonymous Counseling</h2>
-      <p>If you need someone to talk to, we provide anonymous counseling support. Reach out and talk to a professional.</p>
-      <button>Start a Counseling Session</button>
+    <section id="counseling">
+        <h2>Anonymous Counseling</h2>
+        <form action="#" method="post">
+            <label for="feelings">How are you feeling today?</label>
+            <textarea id="feelings" name="feelings" rows="4" cols="50"></textarea>
+            <button type="submit">Submit</button>
+        </form>
     </section>
 
     <!-- Stress Relief Exercises Section -->
-    <section id="stress-relief" class="section">
-      <h2>Stress Relief Exercises</h2>
-      <p>Explore different techniques to relieve stress, such as breathing exercises, meditation, and short physical activities.</p>
-      <button>Start an Exercise</button>
+    <section id="stress-relief">
+        <h2>Stress Relief Exercises</h2>
+        <ul>
+            <li><a href="#">Breathing Exercise</a></li>
+            <li><a href="#">Mindfulness Meditation</a></li>
+            <li><a href="#">Physical Exercise Routine</a></li>
+            <li><a href="#">Positive Affirmations</a></li>
+        </ul>
     </section>
 
     <!-- Mental Health Tracking Section -->
-    <section id="tracking" class="section">
-      <h2>Mental Health Tracking</h2>
-      <p>Track your daily mood and emotions to better understand your mental health over time.</p>
-      <button>Track My Mood</button>
+    <section id="tracking">
+        <h2>Mental Health Tracking</h2>
+        <p>Track your emotional state to monitor progress.</p>
+        <form action="#" method="post">
+            <label for="mood">How do you feel today?</label>
+            <select id="mood" name="mood">
+                <option value="happy">Happy</option>
+                <option value="neutral">Neutral</option>
+                <option value="sad">Sad</option>
+                <option value="anxious">Anxious</option>
+                <option value="stressed">Stressed</option>
+            </select>
+            <label for="stress-level">Rate your stress level (1-10):</label>
+            <input type="number" id="stress-level" name="stress-level" min="1" max="10">
+            <button type="submit">Log Mood</button>
+        </form>
     </section>
 
     <!-- Resources Section -->
-    <section id="resources" class="section">
-      <h2>Resources</h2>
-      <p>Get access to helpful resources, articles, and websites about managing mental health and student life.</p>
-      <button>Explore Resources</button>
+    <section id="resources">
+        <h2>Resources</h2>
+        <p>Find helpful resources for academic and personal support:</p>
+        <ul>
+            <li><a href="#">University Counseling Services</a></li>
+            <li><a href="#">Online Therapy Platforms</a></li>
+            <li><a href="#">Stress Management Workshops</a></li>
+            <li><a href="#">Self-Care Tips</a></li>
+        </ul>
     </section>
-  </main>
 
-  <footer>
-    <p>&copy; 2025 Mental Health Support</p>
-  </footer>
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 Student Mental Health Support | All rights reserved.</p>
+    </footer>
 
-  <script src="./app.js"></script>
+</body>
+</html>
+<script>
+    document.querySelector('#counseling form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const feelings = document.querySelector('#feelings').value;
+
+        if (feelings.trim() === "") {
+            alert("Please share how you're feeling today.");
+            return;
+        }
+
+        fetch('http://localhost:5000/submit-counseling', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ feelings })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            document.querySelector('#feelings').value = '';
+        })
+        .catch(error => {
+            alert('Error submitting your feelings. Please try again later.');
+        });
+    });
+</script>
+<script>
+    document.querySelector('#tracking form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const mood = document.querySelector('#mood').value;
+        const stressLevel = document.querySelector('#stress-level').value;
+
+        if (stressLevel < 1 || stressLevel > 10) {
+            alert("Please rate your stress level between 1 and 10.");
+            return;
+        }
+
+        fetch('http://localhost:5000/submit-tracking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ mood, stressLevel })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            document.querySelector('#mood').value = 'happy';
+            document.querySelector('#stress-level').value = '';
+        })
+        .catch(error => {
+            alert('Error logging your mood and stress level. Please try again later.');
+        });
+    });
+</script>
+<script>
+    document.querySelector('#tracking form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const mood = document.querySelector('#mood').value;
+        const stressLevel = document.querySelector('#stress-level').value;
+
+        if (stressLevel < 1 || stressLevel > 10) {
+            alert("Please rate your stress level between 1 and 10.");
+            return;
+        }
+
+        fetch('http://localhost:5000/submit-tracking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ mood, stressLevel })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            document.querySelector('#mood').value = 'happy';
+            document.querySelector('#stress-level').value = '';
+        })
+        .catch(error => {
+            alert('Error logging your mood and stress level. Please try again later.');
+        });
+    });
+</script>
+
+<script>
+    document.querySelector('#tracking form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const mood = document.querySelector('#mood').value;
+        const stressLevel = document.querySelector('#stress-level').value;
+
+        if (stressLevel < 1 || stressLevel > 10) {
+            alert("Please rate your stress level between 1 and 10.");
+            return;
+        }
+
+        fetch('http://localhost:5000/submit-tracking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ mood, stressLevel })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            document.querySelector('#mood').value = 'happy';
+            document.querySelector('#stress-level').value = '';
+        })
+        .catch(error => {
+            alert('Error logging your mood and stress level. Please try again later.');
+        });
+    });
+    <section id="report">
+    <h2>Report</h2>
+    <button id="generate-report">Generate Report</button>
+    <div id="report-container"></div>
+</section>
+
+</script>
+
+<section id="report">
+    <h2>Report</h2>
+    <button id="generate-report">Generate Report</button>
+    <div id="report-container"></div>
+</section>
+
+<script>
+    document.querySelector('#generate-report').addEventListener('click', function() {
+        fetch('http://localhost:5000/generate-report')
+            .then(response => response.json())
+            .then(data => {
+                const counselingData = data.counselingData.map(entry => `<p>${entry.timestamp}: ${entry.feelings}</p>`).join('');
+                const trackingData = data.trackingData.map(entry => `<p>${entry.timestamp}: Mood - ${entry.mood}, Stress Level - ${entry.stressLevel}</p>`).join('');
+
+                document.querySelector('#report-container').innerHTML = `
+                    <h3>Counseling Sessions:</h3>
+                    ${counselingData}
+                    <h3>Mood and Stress Tracking:</h3>
+                    ${trackingData}
+                `;
+            })
+            .catch(error => {
+                alert('Error generating the report. Please try again later.');
+            });
+    });
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+    <h1>Student Mental Health Report</h1>
+</header>
+
+<main>
+    <div class="report-container">
+        <h2>Student Mental Health Report Summary</h2>
+
+        <!-- Feelings Summary Section -->
+        <div class="report-section">
+            <h3>Feelings Summary</h3>
+            <ul>
+                <li>Anxious: 6</li>
+                <li>Stressed: 7 </li>
+                <li>Happy: 9 </li>
+            </ul>
+        </div>
+
+        <!-- Mood Summary Section -->
+        <div class="report-section">
+            <h3>Mood Summary</h3>
+            <ul>
+                <li>Sad: 3 </li>
+                <li>Anxious: 4  </li>
+                <li>Happy: 7 </li>
+            </ul>
+        </div>
+
+        <!-- Stress Level Summary Section -->
+        <div class="report-section">
+            <h3>Average Stress Level</h3>
+            <p>8.75 (based on 13 responses)</p>
+        </div>
+
+        <!-- Tracking Data Table Section -->
+        <div class="report-section">
+            <h3>Tracking Data</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mood</th>
+                        <th>Stress Level</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Happy</td>
+                        <td>8 </td>
+                        <td>2025-04-03 12:30</td>
+                    </tr>
+                    <tr>
+                        <td>Sad</td>
+                        <td>7 </td>
+                        <td>2025-04-03 14:45</td>
+                    </tr>
+                    <!-- More rows here -->
+                </tbody>
+            </table>
+        </div>
+
+        <button>Generate New Report</button>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 Student Mental Health Support | All rights reserved.</p>
+</footer>
+
 </body>
 </html>
